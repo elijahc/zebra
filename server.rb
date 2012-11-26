@@ -12,6 +12,10 @@ get '/' do
   haml :index
 end
 
+get '/print' do
+  haml :print
+end
+
 get '/properties' do
   [200, {}, @@r.properties.to_json]
 end
@@ -25,7 +29,13 @@ post '/range/:start/to/:end' do
   endval   = params[:end].to_i
   puts "Adding range #{startval}..#{endval}"
 
-  puts @@r.add( startval..endval )
+  begin
+    puts @@r.add( startval..endval )
+    flash[:success] = 'Added range successfully'
+  rescue => e
+    flash[:error] = e.message
+  end
+
 end
 
 post '/new_span/:start/to/:finish' do
@@ -40,4 +50,12 @@ post '/value/:value' do
   puts "Adding value #{value}"
 
   puts @@r.add(value)
+end
+
+def styled_flash
+  puts "<div id='flash'>"
+  flash.each do |k,v|
+    puts "div class='alert alert-#{k.to_s}'>#{v}</div>"
+  end
+  puts "</div>"
 end

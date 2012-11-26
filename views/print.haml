@@ -1,0 +1,18 @@
+= javascript_include_tag "/js/print.js"
+.row
+  =styled_flash
+  .span12.well
+  .span5.offset2
+    %form.form-horizontal
+      .control-group
+        %label.control-label{:for => 'inputStartValue'} Start
+        .controls
+          %input#inputStartValue{:type=>'text', :placeholder => 'Start Value...'}
+      .control-group
+        %label.control-label{:for => 'inputEndValue'} End
+        .controls
+          %input#inputEndValue{:type=>'text', :placeholder => 'End Value...'}
+      .control-group
+        .controls
+          %button.btn#submitRange{:type=>'submit'} Submit
+
