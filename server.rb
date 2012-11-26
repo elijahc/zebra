@@ -1,5 +1,6 @@
 require 'sinatra'
 require 'sinatra/static_assets'
+require 'sinatra/flash'
 require 'haml'
 require 'json'
 require './zebra.rb'

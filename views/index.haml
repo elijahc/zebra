@@ -1,1 +1,10 @@
-%h1 Hi there!
+%form.form-horizontal
+  .control-group
+    %label.control-label{:for => 'inputStartValue'} Start Value
+    .control
+      %input#inputStartValue{:type=>'text', :placeholder => 'Start Value...'}
+  .control-group
+    %label.control-label{:for => 'inputEndValue'} End Value
+    .control
+      %input#inputEndValue{:type=>'text', :placeholder => 'End Value...'}
+
