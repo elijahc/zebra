@@ -1,5 +1,5 @@
 require 'test/unit'
-require './zebra.rb'
+require '../zebra.rb'
 
 class TestUberange < Test::Unit::TestCase
 

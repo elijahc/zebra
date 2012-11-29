@@ -90,38 +90,39 @@ class Zebrascope
     @rangemap
   end
 
-  def sort
-    @rangemap = @rangemap.sort
-  end
-
   def properties
     {:map => @rangemap, :boundaries => @range }
   end
 
+  def within_boundaries?(value)
+    @range.include?(value) && !@range.intersects?(value)
+  end
+
+  def stomps?(value)
+    !@rangemap.select{ |r| r.include?(value) || r.intersects?(value) }.empty?
+  end
+
+  def addable?(value)
+    # If I tried to add this value, would it be inserted?
+    within_boundaries?(value) && !stomps?(value)
+  end
+
   def add(value)
-    if @range.include?(value) && !@range.intersects?(value)
-      # Make sure the added range doesn't stomp on an existing range
-      @rangemap.each do |r|
-        if r.include?(value) || r.intersects?(value)
-          raise 'Can\'t add this value/range because it stomps on another range'
-        end
-      end
+    # Make sure the added range doesn't stomp on an existing range
+    raise 'Cannot add, outside of range' if !within_boundaries?(value)
+    raise 'Cannot add, intersects a range already present' if stomps?(value)
 
-      # Must be able to add the value, so add it
-      case value
-      when Range
-        @rangemap << Uberange.new(value.first, value.last)
-      when Fixnum
-        @rangemap << Uberange.new(value, value)
-      end
-
-      # Sort rangemap
-      @rangemap = @rangemap.sort
-      self.consolidate!
-
-    else
-      raise 'Cannot add, outside of range'
+    # Must be able to add the value, so add it
+    case value
+    when Range
+      @rangemap << Uberange.new(value.first, value.last)
+    when Fixnum
+      @rangemap << Uberange.new(value, value)
     end
+
+    # Sort rangemap
+    @rangemap = @rangemap.sort
+    self.consolidate!
 
   end
 

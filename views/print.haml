@@ -1,17 +1,32 @@
 = javascript_include_tag "/js/print.js"
 .row
-  =styled_flash
-  .span12.well
-  .span5.offset2
-    %form.form-horizontal
-      .control-group
-        %label.control-label{:for => 'inputStartValue'} Start
+  #flash
+  - flash.each do |k,v|
+    %div{:class => "alert alert-#{k.to_s}"}
+      = v
+  .span12
+    .progress#partitionMap
+  .span8.offset2
+    %form.form-horizontal#printRange
+      -#
+        .control-group
+          .controls
+            %label.radio
+              %input#singleRadio{:type=>'radio', :name => 'optionsRadio', :checked => 'checked'}
+              Print single barcode
+            %label.radio
+              Print barcode range
+              %input#rangeRadio{:type=>'radio', :name => 'optionsRadio'}
+        .control-group.inputs
+          %label.control-label{:for => 'inputStartValue'} Start
+          .controls
+            %input#inputStartValue{:type=>'text', :placeholder => 'Start Value...'}
+            %span.help-inline.check-message
+      .control-group.inputs
+        %label.control-label{:for => 'inputPCOID'} ID
         .controls
-          %input#inputStartValue{:type=>'text', :placeholder => 'Start Value...'}
-      .control-group
-        %label.control-label{:for => 'inputEndValue'} End
-        .controls
-          %input#inputEndValue{:type=>'text', :placeholder => 'End Value...'}
+          %input#inputPCOID{:type=>'text', :placeholder => 'PCO ID...'}
+          %span.help-inline.check-message
       .control-group
         .controls
           %button.btn#submitRange{:type=>'submit'} Submit
