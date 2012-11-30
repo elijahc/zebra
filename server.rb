@@ -3,6 +3,7 @@ require 'sinatra/static_assets'
 require 'sinatra/flash'
 require 'haml'
 require 'json'
+require 'mongoid'
 require './zebra.rb'
 
 use Rack::Logger
@@ -10,7 +11,7 @@ use Rack::Logger
 enable :sessions
 
 # TODO: add persistence layer (mongodb)
-@@r = Zebrascope.new(0,50)
+@@r = Zebrascope.new(1,999999)
 
 helpers do
   def logger
@@ -26,6 +27,7 @@ helpers do
   end
 end
 
+# UI service endpoints
 get '/' do
   haml :index
 end
@@ -38,26 +40,26 @@ get '/properties' do
   [200, {}, @@r.properties.to_json]
 end
 
+# GET API routes
 get '/check/value/:value' do
   redirect "/check/range/#{params[:value]}/to/#{params[:value]}"
 end
 
 get '/check/range/:start/to/:end' do
   # TODO: Add ability to check if this value is addable
-  is_addable = @@r.addable?( params[:start].to_i..params[:end].to_i )
-  if is_addable
-    message = 'Valid'
-  else
-    message = 'Invalid'
-  end
-  [ 200, {}, { 'check' => is_addable, 'message' => message }.to_json ]
+  response =  @@r.addable?( params[:start].to_i..params[:end].to_i )
+  response.store('check', response['addable'])
+  [ 200, {}, response.to_json ]
 end
 
+
+# POST API Routes
 post '/add/range/:start/to/:end' do
   startval = params[:start].to_i
   endval   = params[:end].to_i
   puts "Adding range #{startval}..#{endval}"
 
+  # Flashes aren't currently working, still trying to figure that one out...
   begin
     puts @@r.add( startval..endval )
     flash[:success] = 'Added range successfully'

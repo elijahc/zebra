@@ -104,7 +104,27 @@ class Zebrascope
 
   def addable?(value)
     # If I tried to add this value, would it be inserted?
-    within_boundaries?(value) && !stomps?(value)
+    if !within_boundaries?(value)
+      message = 'Invalid, out of bounds'
+      addable = false
+    elsif stomps?(value)
+      message = 'Invalid, already exists'
+      addable = false
+    else
+      message = 'Valid'
+      addable = true
+    end
+    return { 'message' => message, 'addable' => addable, 'next' => next_available(value) }
+  end
+
+  def next_available(value)
+    @rangemap.each do |v|
+      if v.include?(value)
+        return v.last + 1
+      else
+        return nil
+      end
+    end
   end
 
   def add(value)

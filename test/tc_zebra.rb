@@ -30,10 +30,10 @@ class TestZebra < Test::Unit::TestCase
   def test_addable?
     assert( @rangetracker.addable?(5..7) )
     @rangetracker.add( 5..7 )
-    assert_equal( false, @rangetracker.addable?(5) )
-    assert_equal( false, @rangetracker.addable?(6) )
-    assert_equal( false, @rangetracker.addable?(7) )
-    assert_equal( false, @rangetracker.addable?(5..7) )
+    assert_equal( false, @rangetracker.addable?(5)['addable'] )
+    assert_equal( false, @rangetracker.addable?(6)['addable'] )
+    assert_equal( false, @rangetracker.addable?(7)['addable'] )
+    assert_equal( false, @rangetracker.addable?(5..7)['addable'] )
 
   end
 

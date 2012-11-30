@@ -4,10 +4,8 @@
   - flash.each do |k,v|
     %div{:class => "alert alert-#{k.to_s}"}
       = v
-  .span12
-    .progress#partitionMap
   .span8.offset2
-    %form.form-horizontal#printRange
+    %form.form-horizontal#printValue
       -#
         .control-group
           .controls
@@ -25,9 +23,9 @@
       .control-group.inputs
         %label.control-label{:for => 'inputPCOID'} ID
         .controls
-          %input#inputPCOID{:type=>'text', :placeholder => 'PCO ID...'}
+          %input#inputPCOID{:type=>'text', :placeholder => 'PCF ID...'}
           %span.help-inline.check-message
-      .control-group
-        .controls
-          %button.btn#submitRange{:type=>'submit'} Submit
+      .form-actions
+        %button.btn.btn-primary#submitRange{:type=>'submit'} Submit
+        %button.btn#nextAvail{:type=>'button', :disabled => 'disabled'} Next Available ID
 

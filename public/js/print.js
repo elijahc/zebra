@@ -1,10 +1,23 @@
-function api_check(url, params, something) {
+var nextAvail
 
+function check_input(url, value) {
+    $.getJSON( url+value, function(result){
+        console.log(result)
+        if ( result["check"] ) {
+            $('.inputs').addClass('success')
+            $('#nextAvail').attr('disabled', 'disabled')
+        } else {
+            $('.inputs').addClass('error')
+            nextAvail = result['next']
+            $('#nextAvail').removeAttr('disabled')
+        }
+        $('.check-message').html(result["message"])
+    })
 }
 
 $(document).ready(function(){
 
-    $('#printRange').submit(function(){
+    $('#printValue').submit(function(){
         $.post('/add/value/'+$('#inputPCOID').val(), function(){
             location.reload();
         })
@@ -12,23 +25,22 @@ $(document).ready(function(){
         return false
     })
 
+    $('#nextAvail').on('click', function( e ){
+        if ( $('#inputPCOID').val() ) {
+            $('#inputPCOID').val(nextAvail)
+            check_input('/check/value/', nextAvail)
+        }
+    });
+
     $('#submitRange').on('click', function( e ){
-        $('#printRange').submit()
+        $('#printValue').submit()
     });
 
     $('#inputPCOID').on('keyup', function(){
         $('.inputs').attr('class', 'control-group inputs')
         $('.check-message').html('')
         if ( $('#inputPCOID').val() ) {
-            $.getJSON( '/check/value/'+$('#inputPCOID').val(), function(result){
-                console.log(result)
-                if ( result["check"] ) {
-                    $('.inputs').addClass('success')
-                } else {
-                    $('.inputs').addClass('error')
-                }
-                $('.check-message').html(result["message"])
-            })
+            check_input('/check/value/', $('#inputPCOID').val())
         }
     })
 
