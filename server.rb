@@ -2,8 +2,8 @@ require 'sinatra'
 require 'sinatra/static_assets'
 require 'sinatra/flash'
 require 'haml'
+#  require 'mongoid'
 require 'json'
-require 'mongoid'
 require './zebra.rb'
 
 use Rack::Logger

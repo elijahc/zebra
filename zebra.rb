@@ -60,13 +60,77 @@ class Uberange < Range
     end
   end
 
+  def mongoize
+    [ self.first, self.last ]
+  end
+
+  class << self
+
+    def demongoize(object)
+      Uberange.new(object[0], object[1])
+    end
+
+    def mongoize(object)
+      case object
+      when Uberange then object.mongoize
+      else object
+      end
+    end
+
+    def evolve(object)
+      case object
+      when Uberange then object.mongoize
+      else object
+      end
+    end
+
+  end
+
 end
+
 
 class Zebrascope
 
-  def initialize(startpoint, endpoint)
+  def initialize(startpoint, endpoint, rangemap = nil)
     @range = Uberange.new(startpoint, endpoint)
-    @rangemap = Array.new
+    if rangemap.nil?
+      @rangemap = Array.new
+    else
+      # TODO: Need verifiers to confirm its actually an array of ranges
+      @rangemap = rangemap.map do |v|
+        case v
+        when Array then Uberange.demongoize(v)
+        when Uberange then v
+        else v
+        end
+      end
+    end
+  end
+
+  def mongoize
+    [ @range.first, @range.last, @rangemap.map{|r| r.mongoize} ]
+  end
+
+  class << self
+
+    def demongoize(object)
+      Zebrascope.new(object[0], object[1], object[2])
+    end
+
+    def mongoize(object)
+      case object
+      when Zebrascope then object.mongoize
+      else object
+      end
+    end
+
+    def evolve(object)
+      case object
+      when Zebrascope then object.mongoize
+      else object
+      end
+    end
+
   end
 
   def consolidate!
